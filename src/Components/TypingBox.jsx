@@ -20,6 +20,7 @@ const TypingBox = () => {
     const [missedChars, setMissedChars] = useState(0)
     const [extraChars, setExtraChars] = useState(0)
     const [correctWords, setCorrectWords] = useState(0)
+    const [graphData, setGraphData] = useState([])
 
     const [wordsArray, setWordsArray] = useState(() => {
         return randomWords(50)
@@ -45,6 +46,16 @@ const TypingBox = () => {
         setIntervalId(intervalId);
         function timer() {
             setCountDown((latestCountDown) => {
+                setCorrectChars((correctChars) => {
+                    setGraphData((graphData) => {
+                        return [...graphData, [
+                            testSeconds - latestCountDown + 1,
+                            (correctChars / 5) / ((testSeconds - latestCountDown + 1) / 60)
+                        ]]
+                    })
+
+                    return correctChars;
+                })
                 if (latestCountDown === 1) {
                     setTestEnd(true);
                     clearInterval(intervalId);
@@ -216,6 +227,7 @@ const TypingBox = () => {
                 incorrectChars={incorrectChars}
                 missedChars={missedChars}
                 extraChars={extraChars}
+                graphData={graphData}
             />) : <div className="typingBox" onClick={focusInput}>
                 <div className="words">
                     {

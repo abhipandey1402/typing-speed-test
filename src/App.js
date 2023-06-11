@@ -12,7 +12,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <div className="canvas">
         <GlobalStyles />
-        <Header />
+        <Header/>
         <TypingBox />
         <Footer />
       </div>
