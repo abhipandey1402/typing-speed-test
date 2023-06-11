@@ -1,48 +1,112 @@
 import { createRef, useEffect, useMemo, useRef, useState } from "react";
 import { useTestMode } from "../Context/TestModeContext";
 import UpperMenu from "./UpperMenu"
+import Stats from "./Stats";
 
 var randomWords = require('random-words');
 
 const TypingBox = () => {
 
+    const inputRef = useRef(null);
     const { testSeconds } = useTestMode();
     const [countDown, setCountDown] = useState(testSeconds);
-    // const [testStart, setTestStart] = useState(false)
-    // const [testEnd, setTestEnd] = useState(false)
+    const [testStart, setTestStart] = useState(false)
+    const [testEnd, setTestEnd] = useState(false)
+    const [intervalId, setIntervalId] = useState(null);
+    const [currWordIndex, setCurrWordIndex] = useState(0)
+    const [currCharIndex, setCurrCharIndex] = useState(0)
+    const [correctChars, setCorrectChars] = useState(0)
+    const [incorrectChars, setIncorrectChars] = useState(0)
+    const [missedChars, setMissedChars] = useState(0)
+    const [extraChars, setExtraChars] = useState(0)
+    const [correctWords, setCorrectWords] = useState(0)
 
     const [wordsArray, setWordsArray] = useState(() => {
         return randomWords(50)
     })
 
-    const [currWordIndex, setCurrWordIndex] = useState(0)
-    const [currCharIndex, setCurrCharIndex] = useState(0)
-
-    const inputRef = useRef(null);
-
     const wordsSpanRef = useMemo(() => {
         return Array(wordsArray.length).fill(0).map(i => createRef(null))
     }, [wordsArray])
 
-    console.log(wordsSpanRef);
+    useEffect(() => {
+        focusInput();
+        wordsSpanRef[currWordIndex].current.childNodes[currCharIndex].className = 'current'
+    }, [])
 
     useEffect(() => {
-        setCountDown(testSeconds);
+        resetTest();
     }, [testSeconds])
 
+    // implementing timer logic :- whenever user start typing then start
+    // countdown and keep timer running till it reach 0
+    const startTimer = () => {
+        const intervalId = setInterval(timer, 1000);
+        setIntervalId(intervalId);
+        function timer() {
+            setCountDown((latestCountDown) => {
+                if (latestCountDown === 1) {
+                    setTestEnd(true);
+                    clearInterval(intervalId);
+                    return 0;
+                }
+                return latestCountDown - 1;
+            })
+        }
+    }
+
+    // implementiong reset logic :- when user change time then
+    // all functionality should start working from stratch, like - 
+    // blinking at word[0]char[0], new words generated, 
+    // reset most of the states to initial value
+    const resetTest = () => {
+        clearInterval(intervalId)
+        setCountDown(testSeconds);
+        setCurrWordIndex(0);
+        setCurrCharIndex(0);
+        setTestStart(false);
+        setTestEnd(false);
+        setWordsArray(randomWords(50));
+        resetWordSpanRefClassName();
+        focusInput();
+    }
+
+    // Reseting className from all words and chars span, and giving
+    // className 'current' to word[0]char[0] to for blinking at 0th char as initiality happen.
+    const resetWordSpanRefClassName = () => {
+        wordsSpanRef.map(i => {
+            Array.from(i.current.childNodes).map(j => {
+                j.className = '';
+            })
+        })
+        wordsSpanRef[0].current.childNodes[0].className = 'current';
+    }
+
     const handleUserInput = (e) => {
-        console.log(e.key)
+
+        if (!testStart) {
+            startTimer();
+            setTestStart(true);
+        }
 
         // assigning all current word characters to allCurrChars variable
         const allCurrChars = wordsSpanRef[currWordIndex].current.childNodes;
 
         // implementing logic for space button
         if (e.keyCode === 32) {
+
+            let correctCharInWord = wordsSpanRef[currWordIndex].current.querySelectorAll('.correct');
+
+            if (correctCharInWord.length === allCurrChars.length) {
+                setCorrectWords(correctWords + 1);
+            }
+
             if (allCurrChars.length <= currCharIndex) {
                 // removing blinking from right for the last char of any words.
                 allCurrChars[currCharIndex - 1].classList.remove('currentRight')
             } else {
                 // removing blinking from left when currChar is not the last char of word.
+                setMissedChars(missedChars + (allCurrChars.length - currCharIndex))
                 allCurrChars[currCharIndex].classList.remove('current')
             }
 
@@ -68,7 +132,6 @@ const TypingBox = () => {
 
                 // when currChar is at lastIndex then
                 if (currCharIndex === allCurrChars.length) {
-
                     // if it includes 'extra' that means whatever currChar is thats extra 
                     // input from user which needs to be removed by backSpace.
                     if (allCurrChars[currCharIndex - 1].className.includes("extra")) {
@@ -77,7 +140,6 @@ const TypingBox = () => {
                     } else {
                         allCurrChars[currCharIndex - 1].className = 'current';
                     }
-
                     // set prev Char as currChar to perform input
                     setCurrCharIndex(currCharIndex - 1)
                     return;
@@ -89,7 +151,6 @@ const TypingBox = () => {
                 allCurrChars[currCharIndex - 1].className = 'current'
                 setCurrCharIndex(currCharIndex - 1)
             }
-
             return;
         }
 
@@ -107,6 +168,7 @@ const TypingBox = () => {
             allCurrChars[currCharIndex - 1].classList.remove('currentRight')
             wordsSpanRef[currWordIndex].current.append(newSpan);
             setCurrCharIndex(currCharIndex + 1)
+            setExtraChars(extraChars + 1);
             return;
         }
 
@@ -115,10 +177,11 @@ const TypingBox = () => {
         // it red by className 'inCorrect'
         if (e.key === allCurrChars[currCharIndex].innerText) {
             allCurrChars[currCharIndex].className = 'correct';
+            setCorrectChars(correctChars + 1);
         } else {
             allCurrChars[currCharIndex].className = 'inCorrect';
+            setIncorrectChars(incorrectChars + 1)
         }
-
         // give className 'currentRight' and show blinking in right of
         // last char when input char is the last char of word otherwise give 
         // className 'current' to keep blinking at left side of input char.
@@ -127,7 +190,6 @@ const TypingBox = () => {
         } else {
             allCurrChars[currCharIndex + 1].className = 'current'
         }
-
         // updating currCharIndex after every key input
         setCurrCharIndex(currCharIndex + 1)
     }
@@ -136,16 +198,25 @@ const TypingBox = () => {
         inputRef.current.focus();
     }
 
-    useEffect(() => {
-        focusInput();
-        wordsSpanRef[currWordIndex].current.childNodes[currCharIndex].className = 'current'
-    }, [])
+    const calculateWPM = () => {
+        return Math.round((correctChars / 5) / (testSeconds / 60))
+    }
 
+    const calculateAcc = () => {
+        return Math.round((correctWords / currWordIndex) * 100)
+    }
 
     return (
         <div>
-            <div className="typingBox" onClick={focusInput}>
-                <UpperMenu countDown={countDown} />
+            <UpperMenu countDown={countDown} />
+            {(testEnd) ? (<Stats
+                wpm={calculateWPM()}
+                accuracy={calculateAcc()}
+                correctChars={correctChars}
+                incorrectChars={incorrectChars}
+                missedChars={missedChars}
+                extraChars={extraChars}
+            />) : <div className="typingBox" onClick={focusInput}>
                 <div className="words">
                     {
                         wordsArray.map((word, index) => (
@@ -159,7 +230,7 @@ const TypingBox = () => {
                         ))
                     }
                 </div>
-            </div>
+            </div>}
             <input
                 type="text"
                 className="hiddenInput"

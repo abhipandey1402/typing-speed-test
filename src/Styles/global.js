@@ -52,20 +52,18 @@ body{
 
 
 
-
-
-
-
-
-
-
 .testSeconds:hover {
     color: green;
 }
 
 .upperMenu {
+    width: 1000px;
     display: flex;
     justify-content: space-between;
+    flex-direction: row;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px
 }
 
 .testTime {
@@ -86,19 +84,19 @@ body{
 
     @keyframes blinking {
         0%{
-            border-left-color: white;
+            border-left-color: ${({ theme }) => theme.textColor};
         }
         25%{
-            border-left-color: black;
+            border-left-color: ${({ theme }) => theme.background};
         }
         50%{
-            border-left-color: white;
+            border-left-color: ${({ theme }) => theme.textColor};
         }
         75%{
-            border-left-color: black;
+            border-left-color: ${({ theme }) => theme.background};
         }
         100%{
-            border-left-color: white;
+            border-left-color: ${({ theme }) => theme.textColor};
         }
     }
 }
@@ -110,25 +108,25 @@ body{
 
     @keyframes blinkingRight {
         0%{
-            border-right-color: white;
+            border-right-color: ${({ theme }) => theme.textColor};
         }
         25%{
-            border-right-color: black;
+            border-right-color: ${({ theme }) => theme.background};
         }
         50%{
-            border-right-color: white;
+            border-right-color: ${({ theme }) => theme.textColor};
         }
         75%{
-            border-right-color: black;
+            border-right-color: ${({ theme }) => theme.background};
         }
         100%{
-            border-left-color: white;
+            border-left-color: ${({ theme }) => theme.textColor};
         }
     }
 }
 
 .correct {
-    color: green;
+    color: ${({ theme }) => theme.textColor};
 }
 
 .inCorrect {
@@ -144,7 +142,31 @@ body{
     margin-right: auto;
 }
 
+.statsBox {
+    display: flex;
+    width: 1000px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
 
+.leftStats {
+    width: 30%;
+    padding: 30px;
+}
+
+.rightStats {
+    width: 70%;
+}
+
+.title {
+    font-size: 20px;
+    color: ${({ theme }) => theme.typeBoxText}
+}
+
+.subtitle {
+    font-size: 30px;
+}
 
 
 
