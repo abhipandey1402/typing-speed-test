@@ -24,8 +24,8 @@ ChartJS.register(
 
 
 const Graph = ({ graphData }) => {
-    
-    const {theme} = useTheme();
+
+    const { theme } = useTheme();
 
     return (
         <>
@@ -48,3 +48,5 @@ const Graph = ({ graphData }) => {
 }
 
 export default Graph
+
+
