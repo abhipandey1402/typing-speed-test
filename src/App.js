@@ -1,11 +1,11 @@
-import Footer from "./Components/Footer";
-import TypingBox from "./Components/TypingBox";
-import Header from './Components/Header'
 import { GlobalStyles } from "./Styles/global";
 import { ThemeProvider } from "styled-components";
 import { useTheme } from "./Context/ThemeContext";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import HomePage from "./Pages/HomePage";
+import { Route, Routes } from "react-router";
+import UserPage from "./Pages/UserPage";
 
 
 function App() {
@@ -13,12 +13,13 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <ToastContainer/>
-      <div className="canvas">
-        <GlobalStyles />
-        <Header/>
-        <TypingBox />
-        <Footer />
-      </div>
+      <GlobalStyles />
+
+      <Routes>
+        <Route path="/" element={<HomePage/>}/>
+        <Route path="/user" element={<UserPage/>}/>
+      </Routes>
+      
     </ThemeProvider>
   );
 }

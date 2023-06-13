@@ -1,5 +1,8 @@
 import React from 'react'
 import Graph from './Graph'
+import { auth, db } from '../firebaseConfig'
+import { toast } from 'react-toastify';
+import { useEffect } from 'react';
 
 const Stats = (
     {
@@ -20,6 +23,73 @@ const Stats = (
             return i;
         }
     })
+
+    const pushDataTODB = () => {
+
+        if (isNaN(accuracy)) {
+            toast.error('Invalid test', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+            return;
+        }
+
+        const resultRef = db.collection('Results');
+        const { uid } = auth.currentUser;
+        resultRef.add({
+            wpm: wpm,
+            accuracy: accuracy,
+            timeStamp: new Date(),
+            characters: `${correctChars}/${incorrectChars}/${missedChars}/${extraChars}`,
+            userId: uid
+        }).then((res) => {
+            toast.success('Result saved to DB', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }).catch((err) => {
+            toast.error('Not able to save result', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        })
+    }
+
+
+    useEffect(() => {
+        if (auth.currentUser) {
+            pushDataTODB();
+        } else {
+            toast.warning('Login to save results', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+    }, [])
 
     return (
         <div className='statsBox'>
