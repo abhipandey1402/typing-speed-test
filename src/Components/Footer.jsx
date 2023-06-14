@@ -3,6 +3,9 @@ import { useState } from "react"
 import Select from "react-select"
 import { themeOptions } from "../Utils/themeOptions"
 import { useTheme } from "../Context/ThemeContext"
+import github from '../Assets/github.svg'
+import linkedin from '../Assets/linkedin.svg'
+
 
 const Footer = () => {
     const { setTheme, theme } = useTheme();
@@ -14,8 +17,9 @@ const Footer = () => {
     return (
 
         <div className="footer">
-            <div className="footerLinks">
-                Links
+            <div className="footerLinks" style={{ display: 'flex', gap: '10px' }}>
+                <a href="https://github.com/abhipandey1402/typing-speed-test" target="_blank" rel="noreferrer"><img src={github} style={{ width: '40px', backgroundColor: 'white', borderRadius: '50%' }} /></a>
+                <a href="https://linkedin.com/in/abhipandey1402" target="_blank" rel="noreferrer"><img src={linkedin} style={{ width: '40px', backgroundColor: 'white', borderRadius: '50%' }} /></a>
             </div>
             <div className="themeButton">
                 <Select

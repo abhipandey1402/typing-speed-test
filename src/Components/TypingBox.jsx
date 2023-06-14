@@ -66,20 +66,47 @@ const TypingBox = () => {
         }
     }
 
-    // implementiong reset logic :- when user change time then
-    // all functionality should start working from stratch, like - 
-    // blinking at word[0]char[0], new words generated, 
-    // reset most of the states to initial value
-    const resetTest = () => {
+
+    const resetInTest = () => {
         clearInterval(intervalId)
         setCountDown(testSeconds);
         setCurrWordIndex(0);
         setCurrCharIndex(0);
         setTestStart(false);
         setTestEnd(false);
+        setGraphData([]);
+        setCorrectChars(0);
+        setCorrectWords(0);
+        setMissedChars(0);
+        setExtraChars(0);
+        setIncorrectChars(0);
         setWordsArray(randomWords(50));
         resetWordSpanRefClassName();
         focusInput();
+    }
+    const resetAfterTest = () => {
+        clearInterval(intervalId)
+        setCountDown(testSeconds);
+        setCurrWordIndex(0);
+        setCurrCharIndex(0);
+        setTestStart(false);
+        setTestEnd(false);
+        setGraphData([]);
+        setCorrectChars(0);
+        setCorrectWords(0);
+        setMissedChars(0);
+        setExtraChars(0);
+        setIncorrectChars(0);
+        setWordsArray(randomWords(50));
+        focusInput();
+    }
+
+    // implementiong reset logic :- when user change time then
+    // all functionality should start working from stratch, like - 
+    // blinking at word[0]char[0], new words generated, 
+    // reset most of the states to initial value
+    const resetTest = () => {
+        return (testEnd) ? resetAfterTest() : resetInTest()
     }
 
     // Reseting className from all words and chars span, and giving
@@ -94,6 +121,11 @@ const TypingBox = () => {
     }
 
     const handleUserInput = (e) => {
+
+        if (e.keyCode !== 8 && e.key.length > 1) {
+            e.preventDefault();
+            return;
+        }
 
         if (!testStart) {
             startTimer();
@@ -230,6 +262,7 @@ const TypingBox = () => {
                 missedChars={missedChars}
                 extraChars={extraChars}
                 graphData={graphData}
+                resetTest={resetTest}
             />) : <div className="typingBox" onClick={focusInput}>
                 <div className="words">
                     {

@@ -14,11 +14,11 @@ const UpperMenu = ({ countDown }) => {
             <div className="countDown">
                 {countDown}
             </div>
-            <div className="testMode">
+            {/* <div className="testMode">
                 <div>Mode -</div>
                 <div>Time</div>
                 <div>Word</div>
-            </div>
+            </div> */}
             <div className="testTime">
                 <div className="testSeconds" id={15} onClick={updateTestTime}>15s</div>
                 <div className="testSeconds" id={30} onClick={updateTestTime}>30s</div>

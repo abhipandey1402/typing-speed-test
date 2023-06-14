@@ -5,11 +5,11 @@ const darkTheme = {
     typeBoxText: 'grey'
 }
 
-const redTheme = {
-    label: 'Red',
-    background: 'red',
-    textColor: 'purple',
-    typeBoxText: 'pink'
+const darkMagic = {
+    label: 'Dark Magic',
+    background: '#091E2D',
+    textColor: 'rgb(163,135,184)',
+    typeBoxText: '#91E5D0'
 }
 
 const fledging = {
@@ -19,8 +19,36 @@ const fledging = {
     typeBoxText: '#8E5568'
 }
 
+const superUser = {
+    label: 'Super User',
+    background: '#262B32',
+    textColor: '#43FFAF',
+    typeBoxText: 'rgb(56,93,118)'
+}
+
+const bento = {
+    label: 'Bento',
+    background: '#2D384C',
+    textColor: '#FF7B91',
+    typeBoxText: '#4A778C'
+}
+
+const aether = {
+    label: 'Aether',
+    background: '#111920',
+    textColor: '#EEDBEB',
+    typeBoxText: '#CF6BDD'
+}
+
+
+
 export const themeOptions = [
-    {label: 'Dark', value: darkTheme},
-    {label: 'Red', value: redTheme},
-    {label: 'Fledging', value: fledging}
+    { label: 'Super User', value: superUser },
+    { label: 'Dark', value: darkTheme },
+    { label: 'Dark Magic', value: darkMagic },
+    { label: 'Fledging', value: fledging },
+    { label: 'Bento', value: bento },
+    { label: 'Aether', value: aether }
+
 ]
+

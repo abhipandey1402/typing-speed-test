@@ -12,7 +12,8 @@ const Stats = (
         incorrectChars,
         missedChars,
         extraChars,
-        graphData
+        graphData,
+        resetTest
     }
 ) => {
 
@@ -100,6 +101,7 @@ const Stats = (
                 <div className="subtitle">{accuracy}</div>
                 <div className="title">Characters</div>
                 <div className="subtitle">{correctChars}/{incorrectChars}/{missedChars}/{extraChars}</div>
+                <div className="subtitle" onClick={resetTest}>Restart</div>
             </div>
             <div className='rightStats'>
                 <Graph graphData={newGraph} />
